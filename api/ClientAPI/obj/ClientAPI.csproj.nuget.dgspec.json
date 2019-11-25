@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Research\\vg-netcore3-efmssql\\api\\clientapi\\ClientAPI.csproj": {}
+    "E:\\Research\\vg-netcore3-efmssql\\api\\ClientAPI\\ClientAPI.csproj": {}
   },
   "projects": {
-    "E:\\Research\\vg-netcore3-efmssql\\api\\clientapi\\ClientAPI.csproj": {
+    "E:\\Research\\vg-netcore3-efmssql\\api\\ClientAPI\\ClientAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Research\\vg-netcore3-efmssql\\api\\clientapi\\ClientAPI.csproj",
+        "projectUniqueName": "E:\\Research\\vg-netcore3-efmssql\\api\\ClientAPI\\ClientAPI.csproj",
         "projectName": "ClientAPI",
-        "projectPath": "E:\\Research\\vg-netcore3-efmssql\\api\\clientapi\\ClientAPI.csproj",
+        "projectPath": "E:\\Research\\vg-netcore3-efmssql\\api\\ClientAPI\\ClientAPI.csproj",
         "packagesPath": "C:\\Users\\gali\\.nuget\\packages\\",
-        "outputPath": "E:\\Research\\vg-netcore3-efmssql\\api\\clientapi\\obj\\",
+        "outputPath": "E:\\Research\\vg-netcore3-efmssql\\api\\ClientAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -20,13 +20,13 @@
           "C:\\Users\\gali\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "netcoreapp3.0"
+          "netcoreapp2.2"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "netcoreapp3.0": {
+          "netcoreapp2.2": {
             "projectReferences": {}
           }
         },
@@ -37,26 +37,43 @@
         }
       },
       "frameworks": {
-        "netcoreapp3.0": {
-          "imports": [
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "frameworkReferences": {
+        "netcoreapp2.2": {
+          "dependencies": {
+            "AspNetCore.HealthChecks.UI": {
+              "target": "Package",
+              "version": "[2.2.35, )"
+            },
             "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.2.0, )",
+              "autoReferenced": true
+            },
+            "Microsoft.AspNetCore.Razor.Design": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.2.0, )"
             },
             "Microsoft.NETCore.App": {
-              "privateAssets": "all"
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.2.0, )",
+              "autoReferenced": true
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[4.0.1, )"
+            },
+            "microsoft.visualstudio.web.codegeneration.design": {
+              "target": "Package",
+              "version": "[2.2.3, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.101\\RuntimeIdentifierGraph.json"
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
         }
       }
     }

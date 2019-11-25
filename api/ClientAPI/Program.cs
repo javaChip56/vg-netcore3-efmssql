@@ -1,26 +1,34 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace ClientAPI
 {
     public class Program
     {
+        private static string _environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+            .UseKestrel(options => {
+                if (!string.IsNullOrEmpty(_environment) && _environment.ToLower().Equals("development")) {
+                    options.Listen(IPAddress.Loopback, 8090);
+                } else {
+                    options.Listen(IPAddress.Any, 8090);
+                }
+            })
+            .UseStartup<Startup>();
     }
 }
