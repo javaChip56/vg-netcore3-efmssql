@@ -37,7 +37,8 @@ db_setup()
 {
     echo "Setting up Client database."
     # Copy the DB initialization scripts from host to the container scripts directory.
-    docker cp /mnt/host/db_scripts/db_init.sql docker-mssql:/var/opt/mssql-scripts/db_init.sql
+    docker cp /mnt/host/db_scripts/db_init.sql docker-mssql:/var/opt/mssql-scripts/db_init.sql &
+    wait $!
     # Run the DB initilization script.
     docker exec docker-mssql /bin/sh -c '/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '"$SQL_PASSWORD"' -i /var/opt/mssql-scripts/db_init.sql' &
     wait $!
