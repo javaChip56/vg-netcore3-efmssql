@@ -10,8 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 using HealthChecks.UI.Client;
@@ -33,11 +36,7 @@ namespace ClientAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddMvc()
-                .AddJsonOptions(options =>
-                options.SerializerSettings.ContractResolver = new DefaultContractResolver());
-
+            services.AddControllers();
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<ClientContext>(options =>
                 {
@@ -59,12 +58,14 @@ namespace ClientAPI
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc(
+                 c.SwaggerDoc(
                     Configuration["SwaggerConfig:FriendlyName"] + Configuration["SwaggerConfig:Version"],
-                    new Info { 
-                        Title = Configuration["SwaggerConfig:Title"], 
-                        Version = Configuration["SwaggerConfig:Version"] }
-                        );
+                        new OpenApiInfo
+                        {
+                            Title = Configuration["SwaggerConfig:Title"],
+                            Version = Configuration["SwaggerConfig:Version"]
+                        }
+                    );
             });
 
             services.AddHealthChecks()
@@ -72,17 +73,11 @@ namespace ClientAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-                app.UseHttpsRedirection();
             }
 
             app.UseSwagger();
@@ -99,7 +94,13 @@ namespace ClientAPI
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
-            app.UseMvc();
+            
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
         }
     }

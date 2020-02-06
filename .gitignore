@@ -9,6 +9,7 @@ docker/images/
 *obj/
 *obj/Debug/*
 *obj/Release/*
+*obj/*.*.nuget.*.*
 .*/
 
 # Ignore these files
