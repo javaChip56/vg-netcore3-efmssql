@@ -22,13 +22,15 @@ namespace ClientAPI
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-            .UseKestrel(options => {
-                if (!string.IsNullOrEmpty(_environment) && _environment.ToLower().Equals("development")) {
-                    options.Listen(IPAddress.Loopback, 8090);
-                } else {
-                    options.Listen(IPAddress.Any, 8090);
-                }
-            })
+            .UseKestrel(
+            //     options => {
+            //     if (!string.IsNullOrEmpty(_environment) && _environment.ToLower().Equals("development")) {
+            //         options.Listen(IPAddress.Loopback, 8090);
+            //     } else {
+            //         options.Listen(IPAddress.Any, 8090);
+            //     }
+            // }
+            )
             .UseStartup<Startup>();
     }
 }
