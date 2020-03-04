@@ -13,6 +13,7 @@ using HealthChecks.UI.Client;
 using ClientAPI.Domain;
 using ClientAPI.Domain.Queries;
 using ClientAPI.Domain.Queries.Interfaces;
+using ClientAPI.Filters;
 namespace ClientAPI
 {
     public class Startup
@@ -28,16 +29,8 @@ namespace ClientAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
-            services.AddHsts(options =>
-            {
-                options.Preload = true;
-                options.IncludeSubDomains = true;
-                options.MaxAge = TimeSpan.FromDays(1);
-                options.ExcludedHosts.Add("bumusg.com");
-                options.ExcludedHosts.Add("www.bumusg.com");
-            });
-            
+            services.AddScoped<LoggingActionFilter>();
+ 
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<ClientContext>(options =>
                 {
@@ -72,11 +65,6 @@ namespace ClientAPI
             services.AddHealthChecks()
                 .AddCheck("Client Database", new Diagnostics.HealthChecks.DatabaseConnectionHealthCheck(Configuration["ConnectionStrings:ClientDB"]));
 
-            services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-                options.HttpsPort = 443;
-                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,7 +90,6 @@ namespace ClientAPI
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
             
-            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

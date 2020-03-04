@@ -1,14 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
+using ClientAPI.Logging;
 namespace ClientAPI
 {
     public class Program
@@ -17,20 +15,34 @@ namespace ClientAPI
 
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-            .UseKestrel(
-            //     options => {
-            //     if (!string.IsNullOrEmpty(_environment) && _environment.ToLower().Equals("development")) {
-            //         options.Listen(IPAddress.Loopback, 8090);
-            //     } else {
-            //         options.Listen(IPAddress.Any, 8090);
-            //     }
-            // }
-            )
-            .UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(hostBuilder => {
+                
+                var config = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                        .AddJsonFile("appsettings.{builderContext.HostingEnvironment.EnvironmentName}.json", optional: true)
+                        .AddEnvironmentVariables()
+                        .Build();
+
+                    hostBuilder.UseKestrel(options =>
+                    {
+                        if (!string.IsNullOrEmpty(_environment) && _environment.ToLower().Equals("development"))
+                        {
+                            options.Listen(IPAddress.Loopback, 8080);
+                        }
+                        else
+                        {
+                            options.Listen(IPAddress.Any, 8080);
+                        }
+                    });
+
+                    hostBuilder.UseSerilog(LoggingService.BuildLogger(config));
+                    hostBuilder.UseStartup<Startup>();
+            });
     }
 }

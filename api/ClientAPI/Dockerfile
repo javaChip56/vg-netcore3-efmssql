@@ -5,7 +5,7 @@ EXPOSE 8090
 RUN apk add icu-libs
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine3.10 AS build
 WORKDIR /src
 COPY ["ClientAPI.csproj", "./"]
 RUN dotnet restore "./ClientAPI.csproj"
